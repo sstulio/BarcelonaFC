@@ -23,25 +23,25 @@ public class AttackerPlayer extends Thread {
 		selfPerc  = commander.perceiveSelfBlocking();
 		fieldPerc = commander.perceiveFieldBlocking();
 		
-		System.out.println(">> 2. Moving to initial position...");
+//		System.out.println(">> 2. Moving to initial position...");
 		commander.doMoveBlocking(-25.0d, 0.0d);
 		
 		selfPerc  = commander.perceiveSelfBlocking();
 		fieldPerc = commander.perceiveFieldBlocking();
 		
-		System.out.println(">> 3. Now starting...");
+//		System.out.println(">> 3. Now starting...");
 		while (commander.isActive()) {
 			
 			if (isAlignedToBall()) {
 				if (closeToBall()) {
-					commander.doKick(200.0d, -100);
+					commander.doKick(20.0d, -100);
 				} else {
 					runToBall();
 				}
 			} else {
 				turnToBall();
 			}
-
+			
 			updatePerceptions(); //non-blocking
 		}
 		
@@ -90,21 +90,21 @@ public class AttackerPlayer extends Thread {
 	}
 
 	private void turnToBall() {
-		System.out.println("TURN");
+//		System.out.println("TURN");
 		Vector2D ballPos = fieldPerc.getBall().getPosition();
 		Vector2D myPos = selfPerc.getPosition();
-		System.out.println(" => Angulo agente-bola: " + angleToBall() + " (desalinhado)");
-		System.out.println(" => Posicoes: ball = " + ballPos + ", player = " + myPos);
+//		System.out.println(" => Angulo agente-bola: " + angleToBall() + " (desalinhado)");
+//		System.out.println(" => Posicoes: ball = " + ballPos + ", player = " + myPos);
 		
 		Vector2D newDirection = ballPos.sub(myPos);
-		System.out.println(" => Nova direcao: " + newDirection);
+//		System.out.println(" => Nova direcao: " + newDirection);
 		
 		commander.doTurnToPoint(ballPos);
 		//DirectionBlocking(newDirection);		
 	}
 	
 	private void runToBall() {
-		System.out.println("RUN");
+//		System.out.println("RUN");
 		commander.doDashBlocking(100.0d);
 	}
 

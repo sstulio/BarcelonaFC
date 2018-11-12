@@ -19,7 +19,7 @@ public class BarcelonaFC extends AbstractTeam {
 				attacker.start();
 				break;
 			default:
-				HolderPlayer holder = new HolderPlayer(commander);
+				HolderPlayer holder = new HolderPlayer(commander, ag);
 				holder.start();
 				break;
 		}

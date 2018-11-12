@@ -14,9 +14,12 @@ public class HolderPlayer extends Thread {
 	private PlayerPerception selfPerc;
 	private FieldPerception  fieldPerc;
 	
+	private int playerNumber;
+	private Vector2D nextPosition;
 	
-	public HolderPlayer(PlayerCommander player) {
+	public HolderPlayer(PlayerCommander player, int playerNumber) {
 		commander = player;
+		this.playerNumber = playerNumber;
 	}
 
 	@Override
@@ -31,13 +34,21 @@ public class HolderPlayer extends Thread {
 		selfPerc  = commander.perceiveSelfBlocking();
 		fieldPerc = commander.perceiveFieldBlocking();
 		
+		this.nextPosition = this.getRandomPosition();
+		
 		System.out.println(">> 3. Now starting...");
 
-//		while (commander.isActive()) {
-//			turnToRandonPosition();
-//			runFoward();
-//			updatePerceptions(); //non-blocking
-//		}
+		while (commander.isActive()) {
+			
+			if (!closeToNextPosition()) {
+				turnToNextPosition();
+				runFoward();
+				updatePerceptions(); //non-blocking
+			} else {
+				this.nextPosition = getRandomPosition();
+			}
+		
+		}
 		
 		System.out.println(">> 4. Terminated!");
 	}
@@ -84,32 +95,44 @@ public class HolderPlayer extends Thread {
 	}
 
 	private void turnToBall() {
-		System.out.println("TURN");
+//		System.out.println("TURN");
 		Vector2D ballPos = fieldPerc.getBall().getPosition();
 		Vector2D myPos = selfPerc.getPosition();
-		System.out.println(" => Angulo agente-bola: " + angleToBall() + " (desalinhado)");
-		System.out.println(" => Posicoes: ball = " + ballPos + ", player = " + myPos);
 		
 		Vector2D newDirection = ballPos.sub(myPos);
-		System.out.println(" => Nova direcao: " + newDirection);
+
 		
 		commander.doTurnToPoint(ballPos);
 		//DirectionBlocking(newDirection);		
 	}
 	
-	private void turnToRandonPosition() {
-		System.out.println("TURN");
+	private void turnToNextPosition() {
+//		System.out.println("TURN");
+		
+		commander.doTurnToPoint(nextPosition);	
+	}
+	
+	private boolean closeToNextPosition() {
+		if (Math.abs(selfPerc.getPosition().getX() - nextPosition.getX()) <= 12 &&
+				Math.abs(selfPerc.getPosition().getY() - nextPosition.getY()) <= 12) {
+			return true;
+		}
+		return false;
+	}
+	
+	private Vector2D getRandomPosition() {
 		Random r = new Random();
-		int x = r.nextInt(100);
-		int y = r.nextInt(100);
+		int x = -20 + r.nextInt(40);
+		int y = -20 + r.nextInt(40);
 		
 		Vector2D randomPos = new Vector2D(x, y);
-		commander.doTurnToPoint(randomPos);	
+		System.out.println("P" + playerNumber + ": " + "X: " + randomPos.getX() + " | Y: " + randomPos.getY());
+		return randomPos;
 	}
 	
 	private void runFoward() {
-		System.out.println("RUN");
-		commander.doDashBlocking(100.0d);
+//		System.out.println("RUN");
+		commander.doDashBlocking(50.0d);
 	}
 
 }
