@@ -15,11 +15,19 @@ public class BarcelonaFC extends AbstractTeam {
 		
 		switch(ag) {
 			case 0:
+				GolKeeperPlayer golkeeper = new GolKeeperPlayer(commander, ag);
+				golkeeper.start();
+				break;
+			case 1:
 				AttackerPlayer attacker = new AttackerPlayer(commander);
 				attacker.start();
 				break;
-			default:
-				HolderPlayer holder = new HolderPlayer(commander, ag);
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+				MidFieldPlayer holder = new MidFieldPlayer(commander, ag);
 				holder.start();
 				break;
 		}

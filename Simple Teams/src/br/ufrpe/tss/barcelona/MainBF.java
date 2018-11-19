@@ -10,7 +10,7 @@ public class MainBF {
 		BarcelonaFC team2 = new BarcelonaFC("B");
 		
 		team1.launchTeamAndServer();
-		team2.launchTeam();
+//		team2.launchTeam();
 	}
 	
 }

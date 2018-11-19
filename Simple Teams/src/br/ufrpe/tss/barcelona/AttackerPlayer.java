@@ -1,5 +1,7 @@
 package br.ufrpe.tss.barcelona;
 
+import java.util.Random;
+
 import simple_soccer_lib.PlayerCommander;
 import simple_soccer_lib.perception.FieldPerception;
 import simple_soccer_lib.perception.PlayerPerception;
@@ -34,7 +36,12 @@ public class AttackerPlayer extends Thread {
 			
 			if (isAlignedToBall()) {
 				if (closeToBall()) {
-					commander.doKick(20.0d, -100);
+					
+					PlayerPerception otherPlayer = fieldPerc.getTeamPlayers(selfPerc.getSide()).stream().filter(o -> o.getUniformNumber() == 3).findFirst().get();
+					commander.doKickBlocking(20, 0);
+					
+//					System.out.println("P" + otherPlayer.getUniformNumber() + " => Posicoes: OTHER = " + otherPlayer.getPosition() + ", angle = " + angle);
+					
 				} else {
 					runToBall();
 				}
@@ -43,6 +50,7 @@ public class AttackerPlayer extends Thread {
 			}
 			
 			updatePerceptions(); //non-blocking
+			
 		}
 		
 		System.out.println(">> 4. Terminated!");
@@ -76,6 +84,13 @@ public class AttackerPlayer extends Thread {
 		
 		return selfPerc.getDirection().angleFrom(ballPos.sub(myPos));
 	}
+	
+	double angleToPlayer(PlayerPerception player) {
+		Vector2D playerPos = player.getPosition();
+		Vector2D myPos = selfPerc.getPosition();
+		
+		return selfPerc.getDirection().angleFrom(playerPos.sub(myPos));
+	}
 
 	private void updatePerceptions() {
 		PlayerPerception newSelf = commander.perceiveSelf();
@@ -87,6 +102,12 @@ public class AttackerPlayer extends Thread {
 		if (newField != null) {
 			this.fieldPerc = newField;
 		}
+	}
+	
+	private void turnToPosition(Vector2D position) {
+//		System.out.println("TURN");
+		
+		commander.doTurnToPointBlocking(position);	
 	}
 
 	private void turnToBall() {
